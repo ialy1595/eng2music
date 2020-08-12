@@ -64,6 +64,12 @@ function App() {
 
   const SearchResultView = useMemo(SearchResult, [queryRes])
 
+  function preventSubmit(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
+  }
+
   return (
     <div className="wrap">
       <Container className="center">
@@ -73,7 +79,7 @@ function App() {
         <div className="result-wrap">
           {selected}
         </div>
-        <Form>
+        <Form onSubmit={preventSubmit}>
           <Form.Row>
             <Form.Group as={Col} controlId="videoId">
               <Form.Control onChange={(event) => (searchQuery(event.target.value))}/>
