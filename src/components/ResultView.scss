@@ -1,0 +1,57 @@
+@font-face{
+    font-family: "Sriracha-Regular";
+    font-weight: 400;
+    src: url("../fonts/Sriracha-Regular.ttf") format("truetype");
+}
+
+.result-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 0.5em;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 0.25em 1em 0;
+    background: #fff;
+    width: 45em;
+    height: 6em;
+    margin: 0.5em;
+    &:hover {
+        transform: translateY(-0.4em);
+        box-shadow: rgba(0, 0, 0, 0.08) 0.5em 0.5em 1em 0.5em;
+    }
+}
+
+.result-cover {
+    width: 5em;
+    height: 5em;
+    object-fit: cover;
+    border-radius: 0.5em;
+}
+
+.result-youtube {
+    width: 4em;
+    height: 3em;
+    object-fit: scale-down;
+}
+
+.result-main {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+.result-text{
+    font-family: "Sriracha-Regular";
+    font-size: 1.2em;
+    color: black;
+}
+
+.result-info{
+    font-family: "Sriracha-Regular";
+    font-size: 0.8em;
+    color: #404040
+}
+
+
+

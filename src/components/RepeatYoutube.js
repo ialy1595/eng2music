@@ -5,11 +5,6 @@ import YouTube from 'react-youtube';
 function RepeatYoutube({videoId, startTime, endTime}) {
   const [timeoutId, setTimeoutId] = useState(null);
 
-  const opts = {
-    height: '405',
-    width: '720'
-  }
-
   function onReady(event) {
     event.target.seekTo(startTime, true);
   }
@@ -23,12 +18,12 @@ function RepeatYoutube({videoId, startTime, endTime}) {
   }
   
   function ReadyYoutube() {
-    if(videoId) return <YouTube containerClassName="youtube" videoId={videoId} opts={opts} onReady={onReady} onStateChange={onStateChange} />;
+    if(videoId) return <YouTube containerClassName="youtube" videoId={videoId} onReady={onReady} onStateChange={onStateChange} />;
     else return null;
   }
 
   return (
-    <div className="youtube-wrap">
+    <div className="youtube-container">
       {ReadyYoutube()}
     </div>
   );
