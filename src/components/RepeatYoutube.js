@@ -10,11 +10,11 @@ function RepeatYoutube({videoId, startTime, endTime}) {
     width: '720'
   }
 
-  const onReady = (event) => {
+  function onReady(event) {
     event.target.seekTo(startTime, true);
   }
 
-  const onStateChange = (event) => {
+  function onStateChange(event) {
    if(event.data === 1) {
       if(timeoutId) clearTimeout(timeoutId);
       let toi = setTimeout(() => {if(event.target) event.target.seekTo(startTime, true);}, (endTime - startTime) * 1000);

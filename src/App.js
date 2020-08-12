@@ -5,27 +5,58 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
+import phraseData from './data/phraseData'
 
 
 function App() {
   const [vi, setVi] = useState("");
   const [st, setSt] = useState(0);
   const [ed, setEd] = useState(0);
-  const [formVi, setFormVi] = useState("");
-  const [formSt, setFormSt] = useState(0);
-  const [formEd, setFormEd] = useState(0);
   const [yp, setYp] = useState();
+  const [prevQuery, setPrevQuery] = useState("");
+  const [queryRes, setQueryRes] = useState([]);
+  const [prevRes, setPrevRes] = useState([]);
+  
+  function searchQuery(query) {
+    if(query.length < 2) {
+      setPrevQuery(query)
+    }
+    else {
+      const filterTarget = (prevQuery.length >= 2 && query.includes(prevQuery)) ? prevRes : phraseData;
+      setPrevQuery(query);
+      const newRes = filterTarget.filter(x => x.text.includes(query));
+      setQueryRes(newRes);
+      setPrevRes(newRes);
+    }
+  }
 
-  const setVideo = () => {
-    setSt(formSt);
-    setEd(formEd);
-    setVi(formVi);
+  function setVideo(newSt, newEd, newVi) {
+    setSt(newSt);
+    setEd(newEd);
+    setVi(newVi);
   }
 
   useEffect(() => {
     setYp(<RepeatYoutube key={new Date().getTime()} videoId={vi} startTime={st} endTime={ed} />);
   }, [vi, st, ed]);
+
+  function SearchResult() {
+    if(prevQuery.length < 2) return (<div>type at least two characters</div>);
+    const res = [];
+    if(queryRes.length === 0) return (<div>There is no result</div>);
+    else if(queryRes.length <= 10) queryRes.forEach(d => res.push(d)); 
+    else {
+      const randomRes = [];
+      while(randomRes.length < 10) {
+        const r = Math.round((Math.random() * (queryRes.length - 1)));
+        if(!randomRes.includes(r)) randomRes.push(r);
+      }
+      randomRes.forEach(i => res.push(queryRes[i])); 
+    }
+    return res.map(d => (
+      <div key={d.key}>{`${d.text} (${d.title} by ${d.artist})`}</div>
+    ))
+  }
 
   return (
     <div className="wrap">
@@ -35,21 +66,15 @@ function App() {
         </Row>
         <Form>
           <Form.Row>
-            <Form.Group as={Col} xs="8"controlId="videoId">
-              <Form.Label>Video Id</Form.Label>
-              <Form.Control placeholder="after https://www.youtube.com/watch?v=" onChange={(event) => (setFormVi(event.target.value))}/>
-            </Form.Group>
-            <Form.Group as={Col} controlId="startTime">
-              <Form.Label>Start Time(s)</Form.Label>
-              <Form.Control placeholder="start time" onChange={(event) => (setFormSt(parseInt(event.target.value)))}/>
-            </Form.Group>
-            <Form.Group as={Col} controlId="endTime">
-              <Form.Label>End Time(s)</Form.Label>
-              <Form.Control placeholder="end time" onChange={(event) => (setFormEd(parseInt(event.target.value)))}/>
+            <Form.Group as={Col} controlId="videoId">
+              <Form.Label>At least two characters</Form.Label>
+              <Form.Control onChange={(event) => (searchQuery(event.target.value))}/>
             </Form.Group>
           </Form.Row>
-          <Button variant="primary" onClick={setVideo}>play</Button>
         </Form>
+        <Row className="center">
+          {SearchResult()}
+        </Row>
       </Container>
     </div>
   );
