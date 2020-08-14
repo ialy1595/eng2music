@@ -4,11 +4,12 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import recordImage from '../images/recordImage.svg';
 import youtubeImage from '../images/youtubeImage.png';
+import minusImage from '../images/minusImage.svg'
 
-function ResultView({data, setVideo}) {
+function ResultView({data, clickHandler, isSelected}) {
 
     function handler() {
-        setVideo(data);
+        clickHandler(data);
     }
 
     return (
@@ -25,7 +26,7 @@ function ResultView({data, setVideo}) {
                 </div>
             </Col>
             <Col xs={2}>
-                {setVideo ? <img className="result-youtube" src={youtubeImage} alt="cover" onClick={handler}></img> : null}
+                {<img className="result-click" src={isSelected ? minusImage : youtubeImage} alt="" onClick={handler}></img>}
             </Col>
         </Row>
       );

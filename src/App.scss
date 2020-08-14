@@ -1,14 +1,51 @@
 @import "~bootstrap/scss/bootstrap";
 
+@font-face{
+  font-family: "Sriracha-Regular";
+  font-weight: 400;
+  src: url("./fonts/Sriracha-Regular.ttf") format("truetype");
+}
+
 @media screen and (max-width: 800px) { 
-  .wrap {
+  html {
     font-size: 2vw;
   }
 }
 
+html, body, #root, .box { 
+  height: 100%; 
+  width: 100%; 
+  margin: 0; 
+}
+
 .wrap {
+  font-family: "Sriracha-Regular";
   margin: auto;
   max-width: 800px;
+  min-height: 100%;
+}
+
+.blank {
+  height: 2.5em;
+}
+
+.footer {
+  background-color: #eeeeee;
+  height: 2.5em;
+  margin-top: -2.5em;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.disc {
+  font-size: 1.8em;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+  align-items: center;
+  padding-top: 1em;
 }
 
 .center {
@@ -20,10 +57,10 @@
   flex-flow: column nowrap;
   justify-content: space-around;
   align-items: center;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 }
 
 .search-info {
-  font-size: 2em;
+  font-size: 1.5em;
   color: red;
 }
