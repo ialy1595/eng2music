@@ -4,9 +4,12 @@ import RepeatYoutube from './components/RepeatYoutube';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form'
-import phraseData from './data/phraseData'
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import phraseData from './data/phraseData';
 import ResultView from './components/ResultView';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronLeft, faChevronRight, faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons'
 
 
 function App() {
@@ -18,7 +21,10 @@ function App() {
   const [queryRes, setQueryRes] = useState([]);
   const [prevRes, setPrevRes] = useState([]);
   const [selected, setSelected] = useState(null);
-  
+  const [nowPage, setNowPage] = useState(1);
+
+  const pageSize = 10;
+
   function searchQuery(query) {
     if(query.length < 2) {
       setPrevQuery(query);
@@ -30,6 +36,7 @@ function App() {
       const newRes = filterTarget.filter(x => x.text.includes(query.toLowerCase()));
       setQueryRes(newRes);
       setPrevRes(newRes);
+      setNowPage(1);
     }
   }
 
@@ -53,29 +60,65 @@ function App() {
     if(prevQuery.length < 2) return (<div className="search-info">Type at least two characters</div>);
     const res = [];
     if(queryRes.length === 0) return (<div className="search-info">There is no result</div>);
-    else if(queryRes.length <= 10) queryRes.forEach(d => res.push(d)); 
-    else {
-      const randomRes = [];
-      while(randomRes.length < 10) {
-        const r = Math.round((Math.random() * (queryRes.length - 1)));
-        if(!randomRes.includes(r)) randomRes.push(r);
-      }
-      randomRes.forEach(i => res.push(queryRes[i])); 
-    }
+    else queryRes.slice(pageSize * (nowPage - 1), Math.min(pageSize * nowPage, queryRes.length)).forEach(d => res.push(d));
     return res.map(d => (
       <ResultView key={d.key} data={d} clickHandler={setVideo} isSelected={false}></ResultView>
     ))
   }
 
-  const SearchResultView = useMemo(SearchResult, [queryRes])
+  const SearchResultView = useMemo(SearchResult, [queryRes, nowPage])
+
+  function setPageHandler(x) {
+    return (function() {setNowPage(x);});
+  }
+
+  function PageNavigator() {
+    if(prevQuery.length < 2) return null;
+    if(queryRes.length === 0) return null;
+    const maxPage = Math.floor((queryRes.length - 1) / pageSize) + 1;
+    const res = [];
+    const pageSt = Math.floor((nowPage - 1) / 5) * 5 + 1;
+    const pageEd = Math.min(pageSt + 4, maxPage);
+    res.push(<Button 
+      className="page-button" 
+      key={`page-dleft`} 
+      variant="outline-primary"
+      onClick={setPageHandler(Math.max(nowPage - 5, 1))}
+    ><FontAwesomeIcon icon={faAngleDoubleLeft} /></Button>);
+    res.push(<Button 
+      className="page-button" 
+      key={`page-left`} 
+      variant="outline-primary"
+      onClick={setPageHandler(Math.max(nowPage - 1, 1))}
+    ><FontAwesomeIcon icon={faChevronLeft} /></Button>);
+    for(let pp = pageSt; pp <= pageEd; pp++) {
+      res.push(<Button 
+        className="page-button" 
+        key={`pagenav-${pp}`} 
+        variant={pp === nowPage ? "primary" : "outline-primary"}
+        onClick={setPageHandler(pp)}
+      >{pp}</Button>);
+    }
+    res.push(<Button 
+      className="page-button" 
+      key={`page-right`} 
+      variant="outline-primary"
+      onClick={setPageHandler(Math.min(nowPage + 1, maxPage))}
+    ><FontAwesomeIcon icon={faChevronRight} /></Button>);
+    res.push(<Button 
+      className="page-button" 
+      key={`page-dright`} 
+      variant="outline-primary"
+      onClick={setPageHandler(Math.min(nowPage + 5, maxPage))}
+    ><FontAwesomeIcon icon={faAngleDoubleRight} /></Button>);
+    return res;
+  }
 
   function preventSubmit(event) {
     event.preventDefault();
     event.stopPropagation();
     return false;
   }
-
-  
 
   return (
     <div className="box">
@@ -87,7 +130,7 @@ function App() {
           </Row>
           :
           <Row className="disc">
-            <div>Find English sentences in pop songs</div>
+            <div>Find English phrases in music</div>
             <div>Enjoy them on YouTube.</div>
           </Row>
           }
@@ -103,6 +146,9 @@ function App() {
           </Form>
           <div className="result-wrap">
             {SearchResultView}
+          </div>
+          <div className="page-wrap">
+            {PageNavigator()}
           </div>
         </Container>
         <div className="blank"></div>
