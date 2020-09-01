@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import phraseData from './data/phraseData';
+//import phraseData from './data/phraseData';
 import ResultView from './components/ResultView';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft, faChevronRight, faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons'
@@ -22,6 +22,14 @@ function App() {
   const [prevRes, setPrevRes] = useState([]);
   const [selected, setSelected] = useState(null);
   const [nowPage, setNowPage] = useState(1);
+  const [phraseData, setPhraseData] = useState([]);
+
+  useEffect(() => {
+    import('./data/phraseData.json').then(d => {
+      const rawData = JSON.parse(JSON.stringify(d));
+      setPhraseData(rawData.default);
+    })
+  }, []);
 
   const pageSize = 10;
 
@@ -57,6 +65,7 @@ function App() {
   }, [vi, st, ed]);
 
   function SearchResult() {
+    if(phraseData.length === 0) return (<div className="search-info">Data loading...</div>);
     if(prevQuery.length < 2) return (<div className="search-info">Type at least two characters</div>);
     const res = [];
     if(queryRes.length === 0) return (<div className="search-info">There is no result</div>);
@@ -66,7 +75,7 @@ function App() {
     ))
   }
 
-  const SearchResultView = useMemo(SearchResult, [queryRes, nowPage])
+  const SearchResultView = useMemo(SearchResult, [queryRes, nowPage, phraseData])
 
   function setPageHandler(x) {
     return (function() {setNowPage(x);});
@@ -137,6 +146,7 @@ function App() {
           <div className="result-wrap">
             {selected}
           </div>
+          {phraseData.length ?
           <Form onSubmit={preventSubmit}>
             <Form.Row>
               <Form.Group as={Col} controlId="videoId">
@@ -144,6 +154,7 @@ function App() {
               </Form.Group>
             </Form.Row>
           </Form>
+          : null}
           <div className="result-wrap">
             {SearchResultView}
           </div>
